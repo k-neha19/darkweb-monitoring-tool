@@ -195,33 +195,6 @@ IP Address:    203.0.113.42
 
 ---
 
-## Future Improvements
-
-1. **Real API Integration**
-   - HaveIBeenPwned v3 for breach lookups
-   - AbuseIPDB for IP reputation
-   - URLscan.io for brand impersonation
-   - GreyNoise for IP classification
-
-2. **Persistent Storage** – Store scan history in SQLite or PostgreSQL
-
-3. **Scheduled Monitoring** – Cron-based continuous asset monitoring with alerting
-
-4. **Email Alerts** – SMTP-based notifications for new high-severity findings
-
-5. **Export** – PDF/CSV report export of findings
-
-6. **Authentication** – User login, multi-tenant asset management
-
-7. **Async Scanning** – Celery + Redis for parallel, non-blocking scan jobs
-
-8. **Webhook Integration** – Push findings to Slack / PagerDuty / SIEM
-
-9. **Historical Trending** – Track how risk score changes over time with charts
-
-10. **Tor Integration** – Safely query .onion sources via Tor proxy (legal/ethical boundaries apply)
-
----
 
 ## Tech Stack
 
