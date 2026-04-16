@@ -234,10 +234,3 @@ IP Address:    203.0.113.42
 
 ---
 
-## Interview Talking Points
-
-- **Architecture**: Flask REST API serves a single-page dashboard. `/scan` endpoint aggregates results from 6 scan modules and returns unified JSON.
-- **Scan Logic**: Each module simulates a different OSINT/threat intel source. In production, you'd swap the mock functions for real API clients.
-- **Risk Score**: Weighted severity system (High=10, Medium=5, Low=2), normalized to 0–100, categorized into 4 risk levels.
-- **Extensibility**: Adding a new scan source = one new function + one line in `/scan`. Clean separation of concerns.
-- **Realism**: The mock data mimics real-world findings (breach names, forum names, typosquat patterns) to demonstrate understanding of the threat landscape.
