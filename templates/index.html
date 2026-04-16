@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DarkWatch — Dark Web Asset Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ── HEADER ─────────────────────────────── -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">◈</span>
+      <span class="logo-text">DARK<span class="accent">WATCH</span></span>
+      <span class="logo-tag">THREAT INTELLIGENCE</span>
+    </div>
+    <div class="header-meta">
+      <span class="live-indicator"><span class="pulse"></span>LIVE MONITORING</span>
+      <span class="clock" id="clock">--:--:--</span>
+    </div>
+  </div>
+  <div class="scan-line"></div>
+</header>
+
+<!-- ── MAIN ───────────────────────────────── -->
+<main>
+
+  <!-- INPUT PANEL -->
+  <section class="panel input-panel" id="inputPanel">
+    <div class="panel-header">
+      <span class="panel-icon">⊡</span>
+      <h2>ASSET CONFIGURATION</h2>
+      <span class="panel-tag">TARGET DEFINITION</span>
+    </div>
+
+    <div class="input-grid">
+      <div class="input-group">
+        <label for="domain">
+          <span class="label-icon">◎</span> DOMAIN NAME
+          <span class="label-hint">e.g. acmecorp.com</span>
+        </label>
+        <input type="text" id="domain" placeholder="acmecorp.com" autocomplete="off" />
+      </div>
+
+      <div class="input-group">
+        <label for="company">
+          <span class="label-icon">◎</span> COMPANY NAME
+          <span class="label-hint">e.g. Acme Corporation</span>
+        </label>
+        <input type="text" id="company" placeholder="Acme Corporation" autocomplete="off" />
+      </div>
+
+      <div class="input-group">
+        <label for="email_domain">
+          <span class="label-icon">◎</span> EMAIL DOMAIN
+          <span class="label-hint">e.g. acmecorp.com</span>
+        </label>
+        <input type="text" id="email_domain" placeholder="acmecorp.com" autocomplete="off" />
+      </div>
+
+      <div class="input-group">
+        <label for="keywords">
+          <span class="label-icon">◎</span> BRAND KEYWORDS
+          <span class="label-hint">comma-separated</span>
+        </label>
+        <input type="text" id="keywords" placeholder="acme, acmecorp, acme-login" autocomplete="off" />
+      </div>
+
+      <div class="input-group">
+        <label for="ip_address">
+          <span class="label-icon">◎</span> IP ADDRESS
+          <span class="label-hint">optional</span>
+        </label>
+        <input type="text" id="ip_address" placeholder="192.168.1.1" autocomplete="off" />
+      </div>
+
+      <div class="input-actions">
+        <button class="btn-scan" id="scanBtn" onclick="startScan()">
+          <span class="btn-icon">▶</span>
+          <span class="btn-text">INITIATE SCAN</span>
+          <span class="btn-glow"></span>
+        </button>
+        <button class="btn-demo" onclick="fillDemo()">LOAD DEMO</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCANNING ANIMATION -->
+  <section class="scan-progress" id="scanProgress" style="display:none">
+    <div class="progress-inner">
+      <div class="radar-wrap">
+        <div class="radar">
+          <div class="radar-sweep"></div>
+          <div class="radar-ring r1"></div>
+          <div class="radar-ring r2"></div>
+          <div class="radar-ring r3"></div>
+          <div class="radar-center"></div>
+        </div>
+      </div>
+      <div class="progress-log" id="progressLog"></div>
+    </div>
+  </section>
+
+  <!-- RESULTS DASHBOARD -->
+  <section id="resultsSection" style="display:none">
+
+    <!-- RISK SCORE BANNER -->
+    <div class="risk-banner" id="riskBanner">
+      <div class="risk-score-block">
+        <div class="risk-label">OVERALL RISK</div>
+        <div class="risk-score" id="riskScore">--</div>
+        <div class="risk-level" id="riskLevel">--</div>
+      </div>
+      <div class="risk-bars">
+        <div class="risk-bar-track">
+          <div class="risk-bar-fill" id="riskBarFill"></div>
+        </div>
+      </div>
+      <div class="scan-meta" id="scanMeta"></div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="summary-strip">
+      <div class="summary-card high">
+        <div class="scard-count" id="countHigh">0</div>
+        <div class="scard-label">HIGH</div>
+      </div>
+      <div class="summary-card medium">
+        <div class="scard-count" id="countMedium">0</div>
+        <div class="scard-label">MEDIUM</div>
+      </div>
+      <div class="summary-card low">
+        <div class="scard-count" id="countLow">0</div>
+        <div class="scard-label">LOW</div>
+      </div>
+      <div class="summary-card total">
+        <div class="scard-count" id="countTotal">0</div>
+        <div class="scard-label">TOTAL</div>
+      </div>
+    </div>
+
+    <!-- CATEGORY BREAKDOWN -->
+    <div class="panel categories-panel">
+      <div class="panel-header">
+        <span class="panel-icon">◈</span>
+        <h2>FINDINGS BY CATEGORY</h2>
+      </div>
+      <div class="category-bars" id="categoryBars"></div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <span class="filter-label">FILTER:</span>
+      <button class="filter-btn active" data-filter="all" onclick="filterFindings('all', this)">ALL</button>
+      <button class="filter-btn" data-filter="High" onclick="filterFindings('High', this)">HIGH</button>
+      <button class="filter-btn" data-filter="Medium" onclick="filterFindings('Medium', this)">MEDIUM</button>
+      <button class="filter-btn" data-filter="Low" onclick="filterFindings('Low', this)">LOW</button>
+      <button class="filter-btn" data-filter="Credential Leak" onclick="filterFindings('Credential Leak', this)">CREDENTIALS</button>
+      <button class="filter-btn" data-filter="Dark Web Mention" onclick="filterFindings('Dark Web Mention', this)">DARK WEB</button>
+      <button class="filter-btn" data-filter="Brand Impersonation" onclick="filterFindings('Brand Impersonation', this)">IMPERSONATION</button>
+    </div>
+
+    <!-- FINDINGS TABLE -->
+    <div class="panel findings-panel">
+      <div class="panel-header">
+        <span class="panel-icon">⊟</span>
+        <h2>THREAT FINDINGS</h2>
+        <span class="panel-tag" id="findingCount">0 RESULTS</span>
+      </div>
+      <div class="findings-table-wrap">
+        <table class="findings-table">
+          <thead>
+            <tr>
+              <th>SEV</th>
+              <th>CATEGORY</th>
+              <th>SOURCE</th>
+              <th>DETAIL</th>
+              <th>TIMESTAMP</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="findingsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+  <div class="modal" id="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">FINDING DETAIL</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
